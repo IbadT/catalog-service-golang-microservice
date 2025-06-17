@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Catalog struct {
+type Product struct {
 	gorm.Model
 
 	ID           uuid.UUID `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`

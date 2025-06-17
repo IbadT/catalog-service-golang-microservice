@@ -1,19 +1,20 @@
 package catalog
 
 import (
+	domain "github.com/IbadT/catalog-service-golang-microservice.git/internal/domain"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	ListProdcuts(limit, offset int32) error
-	GetProductById(id uuid.UUID) error
-	SearchProductByFilter() error
-	CreateProduct() error
-	UploadProductImg() error
+	ListProdcuts(limit, offset int32) ([]domain.Product, error)
+	GetProductById(id uuid.UUID) (domain.Product, error)
+	SearchProductsByFilter() ([]domain.Product, error)
+	CreateProduct(product domain.Product) error
+	UploadProductImg(imgPath string) error
 
-	CreateCatalog() error
-	GetCatalog() error
+	CreateCategory(catalog domain.Category) error
+	ListCategories() ([]domain.Category, error)
 	UpdateCatalog() error
 	DeleteCatalog(id uuid.UUID) error
 }
@@ -26,32 +27,32 @@ func NewHandler(db *gorm.DB) Repository {
 	return &repository{DB: db}
 }
 
-func (r *repository) ListProdcuts(limit, offset int32) error {
+func (r *repository) ListProdcuts(limit, offset int32) ([]domain.Product, error) {
+	return nil, nil
+}
+
+func (r *repository) GetProductById(id uuid.UUID) (domain.Product, error) {
+	return domain.Product{}, nil
+}
+
+func (r *repository) SearchProductsByFilter() ([]domain.Product, error) {
+	return nil, nil
+}
+
+func (r *repository) CreateProduct(product domain.Product) error {
 	return nil
 }
 
-func (r *repository) GetProductById(id uuid.UUID) error {
+func (r *repository) UploadProductImg(imgPath string) error {
 	return nil
 }
 
-func (r *repository) SearchProductByFilter() error {
+func (r *repository) CreateCategory(category domain.Category) error {
 	return nil
 }
 
-func (r *repository) CreateProduct() error {
-	return nil
-}
-
-func (r *repository) UploadProductImg() error {
-	return nil
-}
-
-func (r *repository) CreateCatalog() error {
-	return nil
-}
-
-func (r *repository) GetCatalog() error {
-	return nil
+func (r *repository) ListCategories() ([]domain.Category, error) {
+	return nil, nil
 }
 
 func (r *repository) UpdateCatalog() error {

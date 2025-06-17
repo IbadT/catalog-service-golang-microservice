@@ -22,7 +22,7 @@ func InitDB() (*gorm.DB, error) {
 	}
 
 	err = DB.AutoMigrate(
-		catalog.Catalog{},
+		catalog.Product{},
 		catalog.Category{},
 	)
 	if err != nil {
