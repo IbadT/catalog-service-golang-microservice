@@ -17,13 +17,17 @@ func InitDB() (*gorm.DB, error) {
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to connect to database %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 		return nil, err
 	}
 
-	DB.AutoMigrate(
+	err = DB.AutoMigrate(
 		catalog.Catalog{},
 		catalog.Category{},
 	)
+	if err != nil {
+		log.Fatalf("Failed to migrate models: %v", err)
+	}
+
 	return DB, nil
 }
