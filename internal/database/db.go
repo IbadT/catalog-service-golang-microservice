@@ -1,14 +1,29 @@
 package database
 
-import "log"
+import (
+	"log"
+
+	"github.com/IbadT/catalog-service-golang-microservice.git/internal/catalog"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
 
 var DB *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
 	dsn := "host=auth_db user=postgres password=postgres dbname=auth_mic port=5432 sslmode=disable"
 
-	DB, err = gorm.Open(postgres.Open(dsn), gorm.Config{})
+	var err error
+
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("")
+		log.Fatalf("Failed to connect to database %v", err)
+		return nil, err
 	}
+
+	DB.AutoMigrate(
+		catalog.Catalog{},
+		catalog.Category{},
+	)
+	return DB, nil
 }
