@@ -15,15 +15,15 @@ type Repository interface {
 
 	CreateCategory(catalog domain.Category) error
 	ListCategories() ([]domain.Category, error)
-	UpdateCatalog() error
-	DeleteCatalog(id uuid.UUID) error
+	UpdateProduct() error
+	DeleteProduct(id uuid.UUID) error
 }
 
 type repository struct {
 	DB *gorm.DB
 }
 
-func NewHandler(db *gorm.DB) Repository {
+func NewRepository(db *gorm.DB) Repository {
 	return &repository{DB: db}
 }
 
@@ -55,10 +55,10 @@ func (r *repository) ListCategories() ([]domain.Category, error) {
 	return nil, nil
 }
 
-func (r *repository) UpdateCatalog() error {
+func (r *repository) UpdateProduct() error {
 	return nil
 }
 
-func (r *repository) DeleteCatalog(id uuid.UUID) error {
+func (r *repository) DeleteProduct(id uuid.UUID) error {
 	return nil
 }
