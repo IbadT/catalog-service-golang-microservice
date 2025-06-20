@@ -8,10 +8,11 @@ import (
 type Service interface {
 	ListProdcuts(limit, offset int32) ([]domain.Product, error)
 	GetProductById(id uuid.UUID) (domain.Product, error)
-	SearchProductsByFilter() ([]domain.Product, error)
-	CreateProduct(product domain.Product) (domain.Product, error)
+	SearchProductsByFilter(title, categoryId string, minPrice, maxPrice int32) ([]domain.Product, error)
+	CreateProduct(product domain.Product) (domain.Product, error) // не используется domain.Product в возврате
 	UploadProductImg(img byte) error
-	UpdateProduct() error
+	UpdateProductTitle(id uuid.UUID, title string) (domain.Product, error)
+	UpdateProductPrice(id uuid.UUID, price int32) (domain.Product, error)
 	DeleteProduct(id uuid.UUID) error
 
 	CreateCategory(category domain.Category) (domain.Category, error)
@@ -34,7 +35,7 @@ func (s *service) GetProductById(id uuid.UUID) (domain.Product, error) {
 	return s.repo.GetProductById(id)
 }
 
-func (s *service) SearchProductsByFilter() ([]domain.Product, error) {
+func (s *service) SearchProductsByFilter(title, categoryId string, minPrice, maxPrice int32) ([]domain.Product, error) {
 	return s.repo.SearchProductsByFilter()
 }
 
@@ -46,8 +47,12 @@ func (s *service) UploadProductImg(img byte) error {
 	return s.repo.UploadProductImg(string(img))
 }
 
-func (s *service) UpdateProduct() error {
-	return s.repo.UpdateProduct()
+func (s *service) UpdateProductTitle(id uuid.UUID, title string) (domain.Product, error) {
+	return domain.Product{}, s.repo.UpdateProduct()
+}
+
+func (s *service) UpdateProductPrice(id uuid.UUID, price int32) (domain.Product, error) {
+	return domain.Product{}, s.repo.UpdateProduct()
 }
 
 func (s *service) DeleteProduct(id uuid.UUID) error {
