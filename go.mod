@@ -3,8 +3,10 @@ module github.com/IbadT/catalog-service-golang-microservice.git
 go 1.24.3
 
 require (
-	github.com/IbadT/project-protos v0.0.0-20250619010812-eca773a73130
+	github.com/IbadT/project-protos v0.0.0-20250620232124-f82fe808049e
 	github.com/google/uuid v1.6.0
+	google.golang.org/grpc v1.73.0
+	google.golang.org/protobuf v1.36.6
 	gorm.io/gorm v1.30.0
 )
 
@@ -18,8 +20,6 @@ require (
 	golang.org/x/sync v0.13.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
-	google.golang.org/grpc v1.73.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
 )
 
 require (

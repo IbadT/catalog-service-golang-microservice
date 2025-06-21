@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/IbadT/catalog-service-golang-microservice.git/internal/catalog"
-	"github.com/IbadT/catalog-service-golang-microservice.git/internal/domain"
 	productpb "github.com/IbadT/project-protos/proto/product"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -14,8 +13,6 @@ type handler struct {
 	svc catalog.Service
 	productpb.UnimplementedProductServiceServer
 }
-
-// !!!!!! в сервис отправлять сырые данные, а не сразу domain !!!!!!
 
 type Handler interface {
 	ListProducts(ctx context.Context, req *productpb.ListProductsRequest) (*productpb.ListProductsResponse, error)
@@ -84,7 +81,7 @@ func (h *handler) GetProductByID(ctx context.Context, req *productpb.GetProductB
 		Rating:      product.Rating,
 		ImageUrl:    product.ImageUrl,
 		Mimetype:    product.Mimetype,
-		Count:       product.Count,
+		Count:       int32(product.Count),
 		Code:        product.Code,
 		CategoryId:  product.CategoryId,
 	}
@@ -98,12 +95,12 @@ func (h *handler) SearchProductsByFilter(ctx context.Context, req *productpb.Sea
 		title = req.Title.Value
 	}
 
-	var minPrice *int32
+	var minPrice *float32
 	if req.MinPrice != nil {
 		minPrice = &req.MinPrice.Value
 	}
 
-	var maxPrice *int32
+	var maxPrice *float32
 	if req.MaxPrice != nil {
 		maxPrice = &req.MaxPrice.Value
 	}
@@ -113,7 +110,7 @@ func (h *handler) SearchProductsByFilter(ctx context.Context, req *productpb.Sea
 		categoryId = req.CategoryId.Value
 	}
 
-	products, err := h.svc.SearchProductsByFilter(title, categoryId, *minPrice, *maxPrice)
+	products, err := h.svc.SearchProductsByFilter(title, categoryId, minPrice, maxPrice)
 	if err != nil {
 		return &productpb.SearchProductByFilterResponse{}, err
 	}
@@ -129,7 +126,7 @@ func (h *handler) SearchProductsByFilter(ctx context.Context, req *productpb.Sea
 			ImageUrl:    prod.ImageUrl,
 			Mimetype:    prod.Mimetype,
 			OldPrice:    float32(prod.OldPrice),
-			Count:       prod.Count,
+			Count:       int32(prod.Count),
 			Code:        prod.Code,
 			CategoryId:  prod.CategoryId,
 		}
@@ -141,23 +138,13 @@ func (h *handler) SearchProductsByFilter(ctx context.Context, req *productpb.Sea
 
 func (h *handler) CreateProduct(ctx context.Context, req *productpb.CreateProductRequest) (*productpb.CreateProductResponse, error) {
 	title := req.Title
-	price := int32(req.Price)
-	count := int32(req.Count)
+	price := req.Price
+	count := req.Count
 	code := string(req.Code)
 	description := req.Description
 	categoryId := req.CategoryId
 
-	prod := domain.Product{
-		ID:          uuid.New(),
-		Title:       title,
-		Price:       price,
-		Count:       count,
-		Code:        code,
-		Description: description,
-		CategoryId:  categoryId,
-	}
-
-	_, err := h.svc.CreateProduct(prod)
+	prod, err := h.svc.CreateProduct(title, code, description, categoryId, price, count)
 	if err != nil {
 		return &productpb.CreateProductResponse{}, nil
 	}
@@ -256,12 +243,7 @@ func (h *handler) DeleteProduct(ctx context.Context, req *productpb.DeleteCatalo
 func (h *handler) CreateCategory(ctx context.Context, req *productpb.CreateCategoryRequest) (*productpb.CreateCategoryResponse, error) {
 	categoryName := req.Category.CategoryName
 
-	category := domain.Category{
-		ID:           uuid.New(),
-		CategoryName: categoryName,
-	}
-
-	c, err := h.svc.CreateCategory(category)
+	c, err := h.svc.CreateCategory(categoryName)
 	if err != nil {
 		return &productpb.CreateCategoryResponse{}, err
 	}
